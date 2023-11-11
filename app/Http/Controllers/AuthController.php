@@ -53,7 +53,33 @@ class AuthController extends Controller
 
          $token = auth()->attempt($request->only('email', 'password'));
 
-         if(!$token){
+         $cookie = Cookie::make('access_token', $token, 60);
+
+         return response() -> json([
+            'status' => 'success',
+            'access_token' => $token,
+            'expires_in' => Auth::factory() -> getTTl() * 60,
+            'user' => $user
+         ])->withCookie($cookie);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'email' => 'required|string|email',
+            'password' => 'required|string|confirmed'
+        ]);
+
+        if($validator->fails()){
+            return response() -> json($validator->errors());
+        }
+
+        $token = auth() -> attempt($request -> only('email','password'));
+
+        if(!$token){
             return response()->json([
                 'status' => 'false',
                 'Errors' => 'Unauthorized'
@@ -67,15 +93,8 @@ class AuthController extends Controller
             'access_token' => $token,
             'expires_in' => Auth::factory() -> getTTl() * 60,
             'user' => auth() -> user()
-         ])->withCookie($cookie);
-    }
+         ]) -> withCookie($cookie);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
     }
 
     /**
