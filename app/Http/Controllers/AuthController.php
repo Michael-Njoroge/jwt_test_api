@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 
@@ -63,9 +64,10 @@ class AuthController extends Controller
 
          return response() -> json([
             'status' => 'success',
-            'access_token' => ''
-
-         ]);
+            'access_token' => $token,
+            'expires_in' => Auth::factory() -> getTTl() * 60,
+            'user' => auth() -> user()
+         ])->withCookie($cookie);
     }
 
     /**
