@@ -86,9 +86,10 @@ class AuthController extends Controller
     /**
      * Refresh token
      */
-    public function refresh(Request $request, string $id)
+    public function refresh()
     {
-        //
+        return $this -> respondWithtoken(auth() -> refresh());
+
     }
 
     /**
