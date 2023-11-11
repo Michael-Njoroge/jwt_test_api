@@ -22,6 +22,8 @@ Route::group([
 
 Route::post('/register',[AuthController::class,'register'])->name('register');
 Route::post('/login',[AuthController::class,'login'])->name('login');
+Route::post('/profile',[AuthController::class,'me'])->name('profile');
+
 
 
 });
