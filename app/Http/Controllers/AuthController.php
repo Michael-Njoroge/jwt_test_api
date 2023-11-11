@@ -42,14 +42,8 @@ class AuthController extends Controller
 
          $token = auth()->attempt($request->only('email', 'password'));
 
-         $cookie = Cookie::make('access_token', $token, 60);
+         return $this -> respondWithtoken($token);
 
-         return response() -> json([
-            'status' => 'success',
-            'access_token' => $token,
-            'expires_in' => Auth::factory() -> getTTl() * 60,
-            'user' => $user
-         ])->withCookie($cookie);
     }
 
 
@@ -76,19 +70,13 @@ class AuthController extends Controller
             ],401);
          }
 
-         $cookie = Cookie::make('access_token', $token, 60);
+         return $this -> respondWithtoken($token);
 
-         return response() -> json([
-            'status' => 'success',
-            'access_token' => $token,
-            'expires_in' => Auth::factory() -> getTTl() * 60,
-            'user' => auth() -> user()
-         ]) -> withCookie($cookie);
-
+         
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show Authenticated User Profile
      */
     public function me()
     {
@@ -96,9 +84,9 @@ class AuthController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Refresh token
      */
-    public function update(Request $request, string $id)
+    public function refresh(Request $request, string $id)
     {
         //
     }
@@ -112,9 +100,14 @@ class AuthController extends Controller
     }
 
     protected function respondWithtoken($token){
-        return response() -> json([
-            'user' => auth()->user(),
-            'access_token' => $token
-        ]);
+        $cookie = Cookie::make('access_token', $token, 60);
+
+         return response() -> json([
+            'status' => 'success',
+            'access_token' => $token,
+            'expires_in' => Auth::factory() -> getTTl() * 60,
+            'user' => auth() -> user()
+         ]) -> withCookie($cookie);
+
     }
 }
