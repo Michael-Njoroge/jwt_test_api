@@ -93,11 +93,12 @@ class AuthController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Log Out Authenticated User
      */
-    public function destroy(string $id)
+    public function logout()
     {
-        //
+        auth() -> logout();
+         return response() -> json(['message' => 'User logged out successfully']);
     }
 
     protected function respondWithtoken($token){

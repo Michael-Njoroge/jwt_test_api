@@ -24,6 +24,8 @@ Route::post('/register',[AuthController::class,'register'])->name('register');
 Route::post('/login',[AuthController::class,'login'])->name('login');
 Route::post('/profile',[AuthController::class,'me'])->name('profile');
 Route::post('/refresh',[AuthController::class,'refresh'])->name('refresh');
+Route::post('/logout',[AuthController::class,'logout'])->name('logout');
+
 
 
 
