@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
- use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Support\Facades\Validator;
 
@@ -49,11 +50,21 @@ class AuthController extends Controller
         ]);
         
 
-         auth()->attempt($request->only('email', 'password'));
+         $token = auth()->attempt($request->only('email', 'password'));
+
+         if(!$token){
+            return response()->json([
+                'status' => 'false',
+                'Errors' => 'Unauthorized'
+            ],401);
+         }
+
+         $cookie = Cookie::make('access_token', $token, 60);
 
          return response() -> json([
-            'message' => 'User registered successfully',
-            'user' => $user
+            'status' => 'success',
+            'access_token' => ''
+
          ]);
     }
 
@@ -87,5 +98,12 @@ class AuthController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    protected function respondWithtoken($token){
+        return response() -> json([
+            'user' => auth()->user(),
+            'access_token' => $token
+        ]);
     }
 }
